@@ -27,13 +27,13 @@ Including another URLconf
 from django.urls import path, include
 from django.contrib import admin
 from django.views.generic import RedirectView
+from users.views import CustomAuthToken
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/projects/', permanent=False)),  # Redirect root URL to /projects/
     path('admin/', admin.site.urls),
     path('', include('projects.urls')),
-    # path('pledges/', include('pledges.urls')),
     path('', include('users.urls')),
-    path('api-auth/', include('rest_framework.urls')),
+    path('api-token-auth/', CustomAuthToken.as_view(), name='api_token_auth'), 
 ]
 
