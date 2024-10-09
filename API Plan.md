@@ -58,25 +58,28 @@ Front-End Pages
 
 Functionality
 
+    1. Responsive Design
+       - Mobile-friendly layout ensuring accessibility on all devices.
+    
+    2. User Accounts
+       - Ability for users to create accounts to track donations or access exclusive resources.
+       - Login functionality for families to share their stories or updates.
+    
+    3. Social Media Integration
+       - Share buttons for users to easily share content on social media platforms.
+       - Embedded social media feeds showcasing updates and community engagement.
+
+    4. Error handling page
+        - Login is required
+        - Unauthorized - not project owner or admin
+        - Bad request - missing field.
+
+    Nice-to-have's
     1. Donation System
        - Secure payment gateway for online donations.
        - Options for one-time or recurring donations.  
         
-    2. Responsive Design
-       - Mobile-friendly layout ensuring accessibility on all devices.
     
-    3. User Accounts
-       - Ability for users to create accounts to track donations or access exclusive resources.
-       - Login functionality for families to share their stories or updates.
-    
-    4. **Social Media Integration
-       - Share buttons for users to easily share content on social media platforms.
-       - Embedded social media feeds showcasing updates and community engagement.
-
-    5. Error handling page
-        - Login is required
-        - Unauthorized - not project owner or admin
-        - Bad request - missing field.
     
     
 
