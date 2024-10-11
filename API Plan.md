@@ -1,3 +1,12 @@
+# TO DO
+*add likes to pledges
+*update API SPEC - include all REST requests.
+*front end pages ---> design/layout
+*DB schema diagram - Tables - User, pledges 
+
+
+
+
 # Crowdfunding Back End
 Rising Athletes
 
@@ -78,7 +87,8 @@ Functionality
     1. Donation System
        - Secure payment gateway for online donations.
        - Options for one-time or recurring donations.  
-        
+
+    2. Share Button - to share pledge links externally.
     
     
     
