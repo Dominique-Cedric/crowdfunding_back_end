@@ -1,5 +1,4 @@
 
-# Create your views here.
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,11 +11,13 @@ from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSeria
 class ProjectList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    #define GET object permissions
     def get(self, request):
         projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
     
+    #define POST object permissions
     def post(self, request):
        serializer = ProjectSerializer(data=request.data)
        if serializer.is_valid():
@@ -35,6 +36,7 @@ class ProjectDetail(APIView):
     permissions.IsAuthenticatedOrReadOnly,
     IsOwnerOrReadOnly
 ]
+    #define GET object permissions
     def get_object(self, pk):
         try:
             Project.objects.get(pk=pk)
@@ -43,11 +45,13 @@ class ProjectDetail(APIView):
         except Project.DoesNotExist:
             raise Http404
 
+    #define GET request after permission is granted
     def get(self, request, pk):
         project = self.get_object(pk)
         serializer = ProjectDetailSerializer(project)
         return Response(serializer.data)
     
+    #define PUT request
     def put(self, request, pk):
         project = self.get_object(pk)
         serializer = ProjectDetailSerializer(
@@ -64,14 +68,25 @@ class ProjectDetail(APIView):
             status=status.HTTP_400_BAD_REQUEST
     )
     
+    #define DELETE request
+    def delete(self, request, pk):
+        project = self.get_object(pk)
+        if project.owner == request.user:
+            project.delete()
+            return Response("User Deleted")
+        return Response ("project not authorised to be deleted")
+    
+    
 
 class PledgeList(APIView):
 
+    #GET request to retrieve all pledge instances
     def get(self, request):
         pledges = Pledge.objects.all()
         serializer = PledgeSerializer(pledges, many=True)
         return Response(serializer.data)
 
+    #Post reques to create new plegde
     def post(self, request):
         serializer = PledgeSerializer(data=request.data)
         if serializer.is_valid():
@@ -84,8 +99,31 @@ class PledgeList(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+    
+    #retrieve all instances of the okedge model from DB
+    queryset = Pledge.objects.all()
+    serializer_class = PledgeSerializer
+
+    #custom handling of object creation
+    def perform_create(self, serializer):
+        serializer.save(supporter=self.request.user)
         
 class PledgeDetail(APIView):
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly
+    ]
+
+    #retrieve a specific model instance by its primary key 
+    def get_object(self, pk):
+        try:
+            pledge = Pledge.objects.get(pk=pk)
+            self.check_object_permissions(self.request, pledge)
+            return pledge
+        except Pledge.DoesNotExist:
+            raise Http404
+    
+    #update an existing resource identified by its primary key
     def put(self, request, pk):
         project = self.get_object(pk)
         serializer = PledgeSerializer(
@@ -100,3 +138,25 @@ class PledgeDetail(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+    #delete an existing resource identified by its primary key
+    def delete(self, request, pk):
+        pledge = self.get_object(pk)
+        if pledge.supporter == request.user:
+            pledge.delete()
+            return Response("User Deleted")
+        return Response ("project not authorised to be deleted")
+    
+
+class Liked(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    #allow users to like a pledge resource identified by its primary key
+    def post(self, request, pk):
+        project = get_object_or_404(Project, pk=pk)
+        if project.liked_by.filter(username=request.user.username).exists():
+            project.liked_by.remove(request.user)
+        else:
+            project.liked_by.add(request.user)
+        serializer = ProjectSerializer(instance=project)
+        return Response(serializer.data)

@@ -10,12 +10,16 @@ from .models import CustomUser
 from .serializers import CustomUserSerializer
 
 class CustomUserList(APIView):
+    
+    # retrieves a list of all users
     def get(self, request):
         users = CustomUser.objects.all()
         serializer = CustomUserSerializer(users, many=True)
         return Response(serializer.data)
 
     def post(self, request):
+        
+        #creates a new user if the data is valid, and returns either the created user's data or validation errors
         serializer = CustomUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -29,12 +33,15 @@ class CustomUserList(APIView):
         )
 
 class CustomUserDetail(APIView):
+    
+    #retrieves a CustomUser instance by its primary key (PK)
     def get_object(self, pk):
         try:
             return CustomUser.objects.get(pk=pk)
         except CustomUser.DoesNotExist:
             raise Http404
 
+    #retrieve details of a specific user
     def get(self, request, pk):
         user = self.get_object(pk)
         serializer = CustomUserSerializer(user)
