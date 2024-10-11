@@ -1,8 +1,8 @@
 # TO DO
-*add likes to pledges
-*update API SPEC - include all REST requests.
-*front end pages ---> design/layout
-*DB schema diagram - Tables - User, pledges 
+    1. add likes to pledges
+    2. update API SPEC - include all REST requests.
+    3. front end pages ---> design/layout
+    4. DB schema diagram - Tables - User, pledges 
 
 
 
