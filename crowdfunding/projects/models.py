@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from .serializers import CustomUserSerializer
 
 User = get_user_model()
 
@@ -10,7 +11,7 @@ class Project(models.Model):
    goal = models.IntegerField()
    image = models.URLField()
    supporter = models.ForeignKey(
-        User,
+        CustomUserSerializer,
         on_delete=models.CASCADE,
         related_name='pledges'
     )
@@ -25,7 +26,7 @@ class Project(models.Model):
    
    #tracks which users have liked the project
    liked_by = models.ManyToManyField(
-        User,
+        CustomUserSerializer,
         related_name='liked_projects'
     )
    
@@ -61,5 +62,9 @@ class Pledge(models.Model):
        on_delete=models.CASCADE,
        related_name='pledges'
    )
+    
+    def get_custom_user_serializer():
+        from .serializers import CustomUserSerializer  # Move import here
+        return CustomUserSerializer
 
 
