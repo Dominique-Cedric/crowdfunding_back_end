@@ -122,5 +122,7 @@ Functionality
 ### DB Schema
 ![]( {{ ./relative/path/to/your/schema/image.png }} )
 
+https://github.com/Dominique-Cedric/crowdfunding_back_end/commit/36cf50a6ee78f78eb586cd2144a78b3857ac0e78 
+
 
 
