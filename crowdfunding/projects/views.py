@@ -2,22 +2,23 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions
-from .permissions import IsOwnerOrReadOnly
-from django.http import Http404
+from rest_framework import status, permissions, status
+from .permissions import IsOwnerOrAdminReadOnly
 from .models import Project, Pledge
-from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer
+from .serializers import ProjectSerializer, PledgeSerializer, PledgeDetailSerializer, ProjectDetailSerializer
+from django.http import Http404
+
 
 class ProjectList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    #define GET object permissions
+    #GET object permissions
     def get(self, request):
         projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
     
-    #define POST object permissions
+    #POST object permissions
     def post(self, request):
        serializer = ProjectSerializer(data=request.data)
        if serializer.is_valid():
@@ -34,7 +35,9 @@ class ProjectList(APIView):
 class ProjectDetail(APIView):
     permission_classes = [
     permissions.IsAuthenticatedOrReadOnly,
-    IsOwnerOrReadOnly
+    # IsOwnerOrReadOnly
+    IsOwnerOrAdminReadOnly
+    
 ]
     #define GET object permissions
     def get_object(self, pk):
@@ -74,7 +77,7 @@ class ProjectDetail(APIView):
         if project.owner == request.user:
             project.delete()
             return Response("User Deleted")
-        return Response ("project not authorised to be deleted")
+        return Response ("project not authorised to be deleted", status=status.HTTP_204_NO_CONTENT)
     
     
 
@@ -90,7 +93,7 @@ class PledgeList(APIView):
     def post(self, request):
         serializer = PledgeSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(supporter=request.user)
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
@@ -100,7 +103,7 @@ class PledgeList(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    #retrieve all instances of the okedge model from DB
+    #retrieve all instances of the pledge model from DB
     queryset = Pledge.objects.all()
     serializer_class = PledgeSerializer
 
@@ -108,10 +111,17 @@ class PledgeList(APIView):
     def perform_create(self, serializer):
         serializer.save(supporter=self.request.user)
         
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.IsAdminUser()] 
+        return [permissions.IsAuthenticatedOrReadOnly()] 
+
+        
 class PledgeDetail(APIView):
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly
+        # IsOwnerOrReadOnly
+        IsOwnerOrAdminReadOnly
     ]
 
     #retrieve a specific model instance by its primary key 
@@ -145,18 +155,11 @@ class PledgeDetail(APIView):
         if pledge.supporter == request.user:
             pledge.delete()
             return Response("User Deleted")
-        return Response ("project not authorised to be deleted")
+        return Response ("project not authorised to be deleted", status=status.HTTP_204_NO_CONTENT)
     
-
-class Liked(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    
-    #allow users to like a pledge resource identified by its primary key
-    def post(self, request, pk):
-        project = get_object_or_404(Project, pk=pk)
-        if project.liked_by.filter(username=request.user.username).exists():
-            project.liked_by.remove(request.user)
-        else:
-            project.liked_by.add(request.user)
-        serializer = ProjectSerializer(instance=project)
+    def get(self,request,pk): 
+        pledge=self.get_object(pk)
+        serializer = PledgeSerializer(pledge)
         return Response(serializer.data)
+
+    

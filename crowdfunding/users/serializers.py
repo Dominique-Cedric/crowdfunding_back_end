@@ -7,5 +7,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'password': {'write_only': True}}
 
+    #password hasing (create user)
     def create(self, validated_data):
+        #print(validated_data)
         return CustomUser.objects.create_user(**validated_data)
