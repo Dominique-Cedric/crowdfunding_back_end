@@ -9,6 +9,7 @@ from .serializers import ProjectSerializer, PledgeSerializer, PledgeDetailSerial
 from django.http import Http404
 
 
+
 class ProjectList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -35,14 +36,13 @@ class ProjectList(APIView):
 class ProjectDetail(APIView):
     permission_classes = [
     permissions.IsAuthenticatedOrReadOnly,
-    # IsOwnerOrReadOnly
     IsOwnerOrAdminReadOnly
     
 ]
     #define GET object permissions
     def get_object(self, pk):
         try:
-            Project.objects.get(pk=pk)
+            project = Project.objects.get(pk=pk)
             self.check_object_permissions(self.request, project)
             return project
         except Project.DoesNotExist:
@@ -116,7 +116,6 @@ class PledgeList(APIView):
             return [permissions.IsAdminUser()] 
         return [permissions.IsAuthenticatedOrReadOnly()] 
 
-        
 class PledgeDetail(APIView):
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
@@ -136,6 +135,7 @@ class PledgeDetail(APIView):
     #update an existing resource identified by its primary key
     def put(self, request, pk):
         project = self.get_object(pk)
+        self.check_object_permissions(self.request, project)
         serializer = PledgeSerializer(
             instance=project,
             data=request.data,
