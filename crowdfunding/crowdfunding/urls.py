@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.contrib import admin
 from django.views.generic import RedirectView
 from rest_framework.authtoken.views import obtain_auth_token
+from crowdfunding.wsgi import application
+
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/projects/', permanent=False)),  # Redirect root URL to /projects/

@@ -161,5 +161,3 @@ class PledgeDetail(APIView):
         pledge=self.get_object(pk)
         serializer = PledgeSerializer(pledge)
         return Response(serializer.data)
-
-    
