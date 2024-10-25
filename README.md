@@ -88,4 +88,4 @@ Functionality
  
  
 ### DB Schema
-https://github.com/SheCodesAus/PlusLessonContent/blob/5d3d945d5751d020c10011b7707a567d5aa4ad0a/3_Django_and_DRF/project_readme_template/readme_template.md
+https://github.com/Dominique-Cedric/crowdfunding_back_end/blob/main/DB%20Schema.png
