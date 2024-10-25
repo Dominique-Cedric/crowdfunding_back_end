@@ -72,20 +72,28 @@ Functionality
  
  
 ### API Spec
- 
-| URL | HTTP Method | Purpose | Purpose | Request Body | Success Response Code | Authentication/Authorisation |
-| ---    | ----------- | ------- | ------- | ------------ | --------------------- | ---------------------------- |
-|     |              |         |        |              |                       |                              |
-|/projects/  |GET| Display all projects |  N/A         |        200       |                       |                              |
-| /projects/:id |GET      |  Return a project by id  |      N/A   |     200         |
-|/projects?is_open=True             |            GET                  |Return projects is open
-|  N/A   |       200      |         |         |              |                       |                              |
-|     |             |         |         |              |                       |                              |
-|     |             |         |         |              |                       |                              |
-|     |             |         |         |              |                       |                              |
-|     |             |         |         |              |                       |                              |
- 
- 
+| URL                    | HTTP METHOD | PURPOSE                             | REQUEST BODY                                             | SUCCESS RESPONSE CODE | Authentication/Authorization                                   |
+|------------------------|-------------|-------------------------------------|---------------------------------------------------------|-----------------------|-----------------------------------------------------------------|
+| /projects/             | GET         | Display all projects                | N/A                                                     | 200                   | N/A                                                             |
+| /projects/:id          | GET         | Return a project by id              | N/A                                                     | 200                   | N/A                                                             |
+| /projects?is_open=True | GET         | Return projects that are open       | N/A                                                     | 200                   | N/A                                                             |
+| /projects/             | POST        | Create a new project                | Project object                                          | 201                   | Login required                                                  |
+| /projects/:id          | PUT         | Update the project                  | Project object                                          | 200                   | Login required / Must be the project owner or admin            |
+| /projects/:id          | DELETE      | Delete the project                  | N/A                                                     | 200                   | Login required / Must be the project owner or admin            |
+| /pledges?is_open=True  | GET         | Get a list of open pledges         | N/A                                                     | 200                   | Login required / Must be the project owner or admin            |
+| /pledges/             | GET         | Return all pledges                  | N/A                                                     | 200                   | N/A                                                             |
+| /pledges/:id          | GET         | Return a pledge by id               | N/A                                                     | 200                   | N/A                                                             |
+| /pledges/             | POST        | Create a pledge                     | Pledge object                                          | 201                   | Login required                                                  |
+| /pledges/:id          | PUT         | Update a pledge                     | Pledge object                                          | 200                   | Login required / Must be the project owner or admin            |
+| /pledges/:id          | DELETE      | Delete the pledge by id             | N/A                                                     | 200                   | Login required / Must be the project owner or admin            |
+| /users/               | GET         | Return all users                    | N/A                                                     | 200                   | Login required / Must be the admin                              |
+| /users/:id/           | GET         | Return users by id                  | N/A                                                     | 200                   |                                                                 |
+| /users/               | POST        | Sign up                             | `{ "username": "", "password": "" }`                   | 201                   | N/A                                                             |
+| /users/login          | POST        | Login                               | User object                                            | 200                   | N/A                                                             |
+| /users/:id            | PUT         | Update the user by id              | `{ "id": , "last_login": null, "is_superuser": false, "username": "", "first_name": "", "last_name": "", "email": "", "is_staff": false, "is_active": true, "date_joined": "2024-10-22T04:02:24.300732Z", "groups": [], "user_permissions": [] }` | 200                   | Login required / Must be the project owner or admin            |
+| /users/:id            | DELETE      | Delete the user by id              | N/A                                                     | 200                   | Login required / Must be the project owner or admin            |
+| api-token-auth/       | POST        | Get User Auth Token                | `{ "username": "", "password": "" }`                   | 200                   | Login required / Must be the project owner or admin            |
+
  
 ### DB Schema
 https://github.com/Dominique-Cedric/crowdfunding_back_end/blob/main/DB%20Schema.png
