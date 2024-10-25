@@ -89,3 +89,8 @@ Functionality
  
 ### DB Schema
 https://github.com/Dominique-Cedric/crowdfunding_back_end/blob/main/DB%20Schema.png
+
+
+Deployed project 
+![image](https://github.com/user-attachments/assets/247768e1-4cbb-439a-b110-9b25400b4f77)
+
